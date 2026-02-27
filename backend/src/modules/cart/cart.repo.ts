@@ -1,0 +1,44 @@
+import { desc, eq } from 'drizzle-orm';
+
+import { db } from '@/shared/infrastructure/db/client';
+import { cartItemSchema } from '@/shared/infrastructure/db/schemes/cart-item.schema';
+import {
+  Cart,
+  cartSchema,
+  CartWithRelations,
+} from '@/shared/infrastructure/db/schemes/cart.schema';
+
+export interface ICartRepository {
+  create(userId: string): Promise<Cart>;
+  findByUserId(id: string): Promise<CartWithRelations | undefined>;
+  update(cart: Partial<Omit<Cart, 'id'>>): Promise<Cart>;
+  clear(userId: string): Promise<void>;
+}
+
+export class CartRepository implements ICartRepository {
+  public async findByUserId(userId: string): Promise<CartWithRelations | undefined> {
+    return await db.query.cartSchema.findFirst({
+      where: eq(cartSchema.userId, userId),
+      with: {
+        cartItems: {
+          with: {
+            product: true,
+          },
+          orderBy: [desc(cartItemSchema.createdAt)],
+        },
+      },
+    });
+  }
+
+  public async create(userId: string): Promise<Cart> {
+    return (await db.insert(cartSchema).values({ userId }).returning())[0];
+  }
+
+  public async update(cart: Partial<Omit<Cart, 'id'>>): Promise<Cart> {
+    return (await db.update(cartSchema).set(cart).returning())[0];
+  }
+
+  public async clear(userId: string): Promise<void> {
+    await db.delete(cartSchema).where(eq(cartSchema.userId, userId));
+  }
+}

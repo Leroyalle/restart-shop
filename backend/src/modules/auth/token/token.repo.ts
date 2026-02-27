@@ -1,0 +1,38 @@
+import { and, eq, isNull } from 'drizzle-orm';
+
+import { db } from '@/shared/infrastructure/db/client';
+import {
+  RefreshToken,
+  refreshTokenSchema,
+} from '@/shared/infrastructure/db/schemes/refresh-token.schema';
+
+export interface ITokenRepository {
+  create: (token: Omit<RefreshToken, 'id'>) => Promise<RefreshToken>;
+  findValidByUserId: (accountId: string) => Promise<RefreshToken | undefined>;
+  findByJti: (jti: string) => Promise<RefreshToken | undefined>;
+}
+
+export class TokenRepo implements ITokenRepository {
+  public async create(token: Omit<RefreshToken, 'id' | 'createdAt' | 'updatedAt'>) {
+    return (await db.insert(refreshTokenSchema).values(token).returning())[0];
+  }
+
+  public async findValidByUserId(userId: string) {
+    return await db.query.refreshTokenSchema.findFirst({
+      where: and(eq(refreshTokenSchema.accountId, userId), isNull(refreshTokenSchema.revokedAt)),
+    });
+  }
+  public async findByJti(jti: string) {
+    return await db.query.refreshTokenSchema.findFirst({
+      where: eq(refreshTokenSchema.jti, jti),
+    });
+  }
+
+  public async update(tokenId: string, token: Partial<Omit<RefreshToken, 'id'>>) {
+    return await db
+      .update(refreshTokenSchema)
+      .set(token)
+      .where(eq(refreshTokenSchema.id, tokenId))
+      .returning();
+  }
+}

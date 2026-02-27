@@ -1,0 +1,51 @@
+services:
+  backend:
+    build: .
+    ports:
+      - '3000:3000'
+    command: >
+      sh -c "bun run db:push && bun run seed && bun run dev"
+    env_file:
+      - .env.production
+    container_name: restart
+    depends_on:
+      - postgres
+      - redis
+      - meilisearch
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.35.0
+    container_name: restart-meilisearch
+    ports:
+      - ${MEILI_PORT}:7700
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    volumes:
+      - meili_data:/meili_data
+
+  redis:
+    image: 'redis:7.4-alpine'
+    container_name: 'restart-redis'
+    command:
+      ['redis-server', '--user', '${REDIS_USER}', 'on', '>${REDIS_PASSWORD}', '~*', '&*', '+@all']
+    ports:
+      - ${REDIS_PORT}:6379
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: restart-db
+    ports:
+      - '${DB_PORT}:5432'
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  meili_data:
+  redis_data:
+  pg_data:

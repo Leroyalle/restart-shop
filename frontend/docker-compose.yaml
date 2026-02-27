@@ -1,0 +1,8 @@
+services:
+  frontend:
+    container_name: 'restart-frontend'
+    ports:
+      - 3001:3001
+    build: .
+    # env_file:
+    # - '.env'
