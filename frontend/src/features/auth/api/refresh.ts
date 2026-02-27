@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/shared/api/base';
+import { tokenStore } from '@/shared/lib/auth/token-store';
 import type { paths } from '@/shared/types/openapi';
 
 export type RefreshTokenResponse =
@@ -14,6 +15,7 @@ class RefreshManager {
     }
 
     this.isRefreshing = true;
+    tokenStore.setRefreshing(true);
 
     this.refreshPromise = fetch(`${API_BASE_URL}/auth/refresh`, {
       method: 'POST',
@@ -23,6 +25,7 @@ class RefreshManager {
       .then(data => data)
       .finally(() => {
         this.isRefreshing = false;
+        tokenStore.setRefreshing(false);
         this.refreshPromise = null;
       });
 

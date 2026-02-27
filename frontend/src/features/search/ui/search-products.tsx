@@ -2,6 +2,7 @@ import { useProducts } from '@/entities/product';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { TextField } from '@/shared/ui/input';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface Props {
   className?: string;
@@ -54,7 +55,8 @@ export const SearchProducts = ({ className }: Props) => {
                 </span>
                 {data.pages.map(page =>
                   page.items.map(item => (
-                    <button
+                    <Link
+                      to={`/product/${item.id}`}
                       key={item.id}
                       className="group/item flex items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-white/5 active:scale-[0.98]">
                       <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-ink-800 border border-white/5">
@@ -75,7 +77,7 @@ export const SearchProducts = ({ className }: Props) => {
                       <div className="opacity-0 transition-opacity group-hover/item:opacity-100 pr-2">
                         <ArrowIcon className="h-4 w-4 text-text-muted" />
                       </div>
-                    </button>
+                    </Link>
                   )),
                 )}
               </div>

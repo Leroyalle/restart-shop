@@ -1,11 +1,15 @@
 import { useAddToCart } from '@/entities/cart';
 import { useCompare } from '@/entities/compare';
+import {
+  useAddToFavorite,
+  useRemoveFromFavorite,
+} from '@/entities/favorites/model/queries/use-favorites';
 import { useProduct } from '@/entities/product';
 import { tokenStore } from '@/shared/lib/auth/token-store';
 import { Button } from '@/shared/ui/button';
 import { Container } from '@/shared/ui/container';
 import { Header } from '@/widgets/header';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,16 +23,31 @@ type DetailItem = {
 
 export const ProductPage = () => {
   const navigate = useNavigate();
+  const { isRefreshing } = useSyncExternalStore(tokenStore.subscribe, tokenStore.get);
   const { productId = '' } = useParams<{ productId: string }>();
-  const { data: product, isLoading } = useProduct(productId);
+  const { data: product, isLoading } = useProduct(productId, {
+    enabled: !!productId && !isRefreshing,
+  });
   const { mutate: addToCart, isPending } = useAddToCart();
   const { add, has } = useCompare();
   const [isAdded, setIsAdded] = useState(false);
 
   const detailItems = toDetailItems(product?.details);
 
+  const addFavorite = useAddToFavorite();
+  const removeFavorite = useRemoveFromFavorite();
+
+  const favoriteHandler = () => {
+    if (!product) return;
+    if (product.isFavorite) {
+      removeFavorite.mutate(product.id);
+    } else {
+      addFavorite.mutate(product.id);
+    }
+  };
+
   const handleAddToCart = () => {
-    const token = tokenStore.get();
+    const token = tokenStore.get().accessToken;
 
     if (!token) {
       navigate('/auth');
@@ -43,10 +62,10 @@ export const ProductPage = () => {
       onSuccess: () => {
         setIsAdded(true);
         setTimeout(() => setIsAdded(false), 2000);
-        // toast.success('Product added to cart');
+        toast.success('Товар добавлен в корзину!');
       },
       onError: () => {
-        toast.error('Something went wrong');
+        toast.error('Ошибка. Попробуйте еще раз!');
       },
     });
   };
@@ -129,7 +148,7 @@ export const ProductPage = () => {
                 <div className="mt-10 flex items-center gap-3">
                   <Button className="h-11 flex-1" disabled={isPending} onClick={handleAddToCart}>
                     <CartIcon className="h-4 w-4" />
-                    {isAdded ? 'Added' : isPending ? 'Adding...' : 'Add to cart'}
+                    {isAdded ? 'Добавлен!' : isPending ? 'Добавляю...' : 'Добавить в корзину'}
                   </Button>
                   <IconSquare
                     onClick={handleAddToCompare}
@@ -142,7 +161,17 @@ export const ProductPage = () => {
                       />
                     }
                   />
-                  <IconSquare icon={<HeartIcon className="h-4 w-4 text-pink-400" />} />
+                  <IconSquare
+                    onClick={() => favoriteHandler()}
+                    icon={
+                      <HeartIcon
+                        className={[
+                          'h-4 w-4 transition-colors',
+                          product.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400',
+                        ].join(' ')}
+                      />
+                    }
+                  />
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: data => {
-      tokenStore.set(data.accessToken.token);
+      tokenStore.setToken(data.accessToken.token);
       toast.success(data.message);
     },
 

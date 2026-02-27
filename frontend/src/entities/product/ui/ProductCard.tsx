@@ -35,7 +35,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   const handleAddToCart = () => {
-    const token = tokenStore.get();
+    const token = tokenStore.get().accessToken;
     if (!token) {
       navigate('/auth');
       return;

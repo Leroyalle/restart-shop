@@ -5,10 +5,10 @@ import { Container } from '@/shared/ui/container';
 import { useSyncExternalStore } from 'react';
 
 export const Popular = () => {
-  const token = useSyncExternalStore(tokenStore.subscribe, tokenStore.get);
+  const { isRefreshing } = useSyncExternalStore(tokenStore.subscribe, tokenStore.get);
 
   const { data, isLoading, isError } = useProducts(undefined, {
-    enabled: !!token,
+    enabled: !isRefreshing,
   });
 
   if (isLoading) {

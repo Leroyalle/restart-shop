@@ -33,9 +33,13 @@ export function useAddToFavorite() {
       return { previous };
     },
 
-    onSettled() {
+    onSettled(_data, _error, productId) {
       queryClient.invalidateQueries({
         queryKey: ['favorites'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['product', productId],
       });
     },
   });
@@ -71,9 +75,13 @@ export function useRemoveFromFavorite() {
       return { previous };
     },
 
-    onSettled() {
+    onSettled(_data, _error, productId) {
       queryClient.invalidateQueries({
         queryKey: ['favorites'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['product', productId],
       });
     },
   });

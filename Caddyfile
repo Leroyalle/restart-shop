@@ -6,9 +6,4 @@
     handle {
         reverse_proxy frontend:3001
     }
-
-    log {
-        output stdout
-        format console
-    }
 }

@@ -9,7 +9,7 @@ import { useSyncExternalStore } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const CategoryPage = () => {
-  const token = useSyncExternalStore(tokenStore.subscribe, tokenStore.get);
+  const { isRefreshing } = useSyncExternalStore(tokenStore.subscribe, tokenStore.get);
   const { categoryId } = useParams<{ categoryId: string }>();
   const { data: category } = useGetCategoryById(categoryId ?? '');
   const limit = 12;
@@ -19,7 +19,7 @@ export const CategoryPage = () => {
     isLoading: isProductsLoading,
     fetchNextPage,
     hasNextPage,
-  } = useProducts({ categoryId, limit }, { enabled: !!token });
+  } = useProducts({ categoryId, limit }, { enabled: !isRefreshing });
 
   return (
     <div>
