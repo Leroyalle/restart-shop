@@ -25,7 +25,9 @@ export class TelegramCommands implements ITelegramCommands {
 🆕 *Новый заказ*
 
 *Order ID:* \`${order.id}\`
-*Пользователь:* ${customer.id}
+*ID пользователя:* ${customer.id}
+*Имя:* ${customer.name}
+*Email:* ${customer.email}
 *Телефон:* ${order.phone}
 
 *Состав заказа:*
