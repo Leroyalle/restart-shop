@@ -6,12 +6,15 @@ services:
     command: >
       sh -c "bun run db:push && bun run seed && bun run dev"
     env_file:
-      - .env.production
+      - .env
     container_name: restart
     depends_on:
-      - postgres
-      - redis
-      - meilisearch
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      meilisearch:
+        condition: service_started
 
   meilisearch:
     image: getmeili/meilisearch:v1.35.0
@@ -44,6 +47,11 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   meili_data:

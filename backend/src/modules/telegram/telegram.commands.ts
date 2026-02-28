@@ -10,7 +10,7 @@ export interface ITelegramCommands {
 
 export class TelegramCommands implements ITelegramCommands {
   private adminChatId: string;
-  constructor(private readonly bot: Bot) {
+  constructor(private readonly bot: Bot<any>) {
     this.adminChatId = getEnv('TELEGRAM_ADMIN_CHAT_ID');
   }
 

@@ -9,10 +9,10 @@ export const productsToCategoriesSchema = pgTable(
   {
     productId: uuid('product_id')
       .notNull()
-      .references(() => productSchema.id),
+      .references(() => productSchema.id, { onDelete: 'cascade' }),
     categoryId: uuid('category_id')
       .notNull()
-      .references(() => categorySchema.id),
+      .references(() => categorySchema.id, { onDelete: 'cascade' }),
   },
   table => [primaryKey({ columns: [table.productId, table.categoryId] })],
 );

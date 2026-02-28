@@ -96,11 +96,11 @@ export function createProductRouter(deps: Deps): OpenAPIHono<{ Variables: Partia
   });
 
   // TODO: гвард на авторизацию админа
-  productRouter.openapi(createPostRoute, async c => {
-    const body = c.req.valid('json');
-    const data = await deps.commands.create(body);
-    return c.json(data, 201);
-  });
+  // productRouter.openapi(createPostRoute, async c => {
+  //   const body = c.req.valid('json');
+  //   const data = await deps.commands.create(body);
+  //   return c.json(data, 201);
+  // });
 
   const getProductByIdRoute = createRoute({
     description: 'Получить продукт по id',

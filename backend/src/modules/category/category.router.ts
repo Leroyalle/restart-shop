@@ -64,11 +64,11 @@ export function createCategoryRouter(deps: Deps) {
   });
 
   // TODO: гвард админа
-  router.openapi(createCategoryRoute, async c => {
-    const body = c.req.valid('json');
-    const result = await deps.commands.create(body);
-    return c.json(result, 201);
-  });
+  // router.openapi(createCategoryRoute, async c => {
+  //   const body = c.req.valid('json');
+  //   const result = await deps.commands.create(body);
+  //   return c.json(result, 201);
+  // });
 
   const getByIdRoute = createRoute({
     method: 'get',

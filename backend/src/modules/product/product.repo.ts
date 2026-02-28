@@ -22,6 +22,7 @@ export interface IProductRepository {
   ): Promise<IPaginationResult<Pick<Product, 'id' | 'name' | 'price' | 'image' | 'details'>>>;
   findById(id: string): Promise<Product>;
   findByIds(ids: string[]): Promise<Product[]>;
+  remove(id: string): Promise<void>;
 }
 
 export class ProductRepo implements IProductRepository {
@@ -130,6 +131,10 @@ export class ProductRepo implements IProductRepository {
 
   public async findById(id: string): Promise<Product> {
     return (await db.select().from(productSchema).where(eq(productSchema.id, id)))[0];
+  }
+
+  public async remove(id: string) {
+    await db.delete(productSchema).where(eq(productSchema.id, id));
   }
 
   public findByIds(ids: string[]) {

@@ -42,6 +42,7 @@ async function seed() {
       description,
       name,
       image: faker.image.urlPicsumPhotos(),
+      inStock: 1,
       details: {
         Размер: faker.commerce.productDescription(),
         Цвет: faker.commerce.productDescription(),
