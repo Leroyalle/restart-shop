@@ -1,6 +1,5 @@
 import { ProductCard, useProducts } from '@/entities/product';
 import { tokenStore } from '@/shared/lib/auth/token-store';
-import { Button } from '@/shared/ui/button';
 import { Container } from '@/shared/ui/container';
 import { useSyncExternalStore } from 'react';
 
@@ -27,7 +26,6 @@ export const Popular = () => {
             <h2 className="text-3xl font-semibold text-text-primary">
               Популярные <span className="text-brand-300">товары</span>
             </h2>
-            <Button variant="ghost">Все товары</Button>
           </div>
         )}
 

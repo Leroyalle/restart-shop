@@ -42,7 +42,12 @@ async function seed() {
       description,
       name,
       image: faker.image.urlPicsumPhotos(),
-      details: {},
+      details: {
+        Размер: faker.commerce.productDescription(),
+        Цвет: faker.commerce.productDescription(),
+        Материал: faker.commerce.productDescription(),
+        Производитель: faker.commerce.productDescription(),
+      },
       price: faker.number.int({ min: 1, max: 100_000 }),
       aliases,
       categories: Array.from(randomIds),

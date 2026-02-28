@@ -1,10 +1,9 @@
 import { benefits } from '@/shared/mock/benefits';
-import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
 import { Container } from '@/shared/ui/container';
 import { IconCircle } from '@/shared/ui/icon';
 
-const ctaButtons = ['Купить iPhone', 'PlayStation 5', 'AirPods'];
+// const ctaButtons = ['Купить iPhone', 'PlayStation 5', 'AirPods'];
 
 export const Hero = () => {
   return (
@@ -50,13 +49,13 @@ export const Hero = () => {
               </Card>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-3">
+            {/* <div className="mt-10 flex flex-wrap gap-3">
               {ctaButtons.map((label, index) => (
                 <Button key={label} variant={index === 0 ? 'primary' : 'ghost'}>
                   {label}
                 </Button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <div className="relative hidden lg:block">
